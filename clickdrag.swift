@@ -1,7 +1,7 @@
 #!/usr/bin/env xcrun swift
 import Foundation
 
-let kDelayUSec : useconds_t = 100_000
+let kDelayUSec : useconds_t = 25_000
 
 func DragMouse(from p0: CGPoint, to p1: CGPoint) {
     let mouseDown = CGEvent.init(mouseEventSource:nil,
@@ -18,6 +18,14 @@ func DragMouse(from p0: CGPoint, to p1: CGPoint) {
     mouseUp.post(tap:.cghidEventTap)
 }
 
+func CenterMouseBetween(start p0: CGPoint, end p1: CGPoint) {
+    let c0 = CGPoint(x:(p1.x-p0.x)/2+p0.x, y:(p1.y-p0.y)/2+p0.y)
+    let mouseMove = CGEvent.init(mouseEventSource:nil,
+          mouseType:.mouseMoved,       mouseCursorPosition:c0, mouseButton:.left)!
+
+    mouseMove.post(tap:.cghidEventTap)
+}
+
 func main() {
     let args = UserDefaults.standard
 
@@ -30,6 +38,8 @@ func main() {
     let p1 = CGPoint(x:x + dx, y:y + dy)
 
     DragMouse(from: p0, to: p1)
+    usleep(kDelayUSec)
+    CenterMouseBetween(start: p0, end: p1)
 }
 
 main()
